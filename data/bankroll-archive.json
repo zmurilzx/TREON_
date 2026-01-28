@@ -1,0 +1,267 @@
+[
+  {
+    "id": "1769543408301",
+    "name": "Janeiro de 2026",
+    "date": "2026-01-27T19:50:07.677Z",
+    "bancaInicial": 2000,
+    "metaMensal": 15000,
+    "rows": [
+      {
+        "id": 1,
+        "banca": 2000,
+        "casa1": "448",
+        "casa2": "2948",
+        "lucro": 396,
+        "saque": "",
+        "total": 3396,
+        "deposito": "1000",
+        "depositoRetirado": 2396
+      },
+      {
+        "id": 2,
+        "banca": 3396,
+        "casa1": "2289",
+        "casa2": "1475+121+205+120",
+        "lucro": 458,
+        "saque": "1544",
+        "total": 4210,
+        "deposito": "1150+250+250+250",
+        "depositoRetirado": 3854
+      },
+      {
+        "id": 3,
+        "banca": 4210,
+        "casa1": "3153",
+        "casa2": "1673+373",
+        "lucro": 356,
+        "saque": "125+40+2000+41+1077",
+        "total": 5199,
+        "deposito": "300+500+1500+500+500+400+216",
+        "depositoRetirado": 4566
+      },
+      {
+        "id": 4,
+        "banca": 5199,
+        "casa1": "4406",
+        "casa2": "400+400+368",
+        "lucro": 425,
+        "saque": "1673+3631+1329+1139",
+        "total": 5574,
+        "deposito": "1500+1500+300+300+300+500+1500+400+400+357+665",
+        "depositoRetirado": 5624
+      },
+      {
+        "id": 5,
+        "banca": 5574,
+        "casa1": "1512",
+        "casa2": "400+400+200",
+        "lucro": -1579,
+        "saque": "1483",
+        "total": 2512,
+        "deposito": "",
+        "depositoRetirado": 3995
+      },
+      {
+        "id": 6,
+        "banca": 2512,
+        "casa1": "3431",
+        "casa2": "1085",
+        "deposito": "1202",
+        "saque": "",
+        "total": 4516,
+        "depositoRetirado": 3314,
+        "lucro": 802
+      },
+      {
+        "id": 7,
+        "banca": 4516,
+        "casa1": "756+500",
+        "casa2": "162+162+162+1080",
+        "deposito": "",
+        "saque": "1866",
+        "total": 2822,
+        "depositoRetirado": 4688,
+        "lucro": 172
+      },
+      {
+        "id": 8,
+        "banca": 2822,
+        "casa1": "3002",
+        "casa2": "2769",
+        "deposito": "1531",
+        "saque": "",
+        "total": 5771,
+        "depositoRetirado": 4240,
+        "lucro": 1418
+      },
+      {
+        "id": 9,
+        "banca": 5771,
+        "casa1": "2358",
+        "casa2": "4227",
+        "deposito": "107",
+        "saque": "",
+        "total": 6585,
+        "depositoRetirado": 6478,
+        "lucro": 707
+      },
+      {
+        "id": 10,
+        "banca": 6585,
+        "casa1": "5335",
+        "casa2": "1680",
+        "deposito": "",
+        "saque": "125",
+        "total": 7015,
+        "depositoRetirado": 7140,
+        "lucro": 555
+      },
+      {
+        "id": 11,
+        "banca": 7015,
+        "casa1": "3126",
+        "casa2": "2550",
+        "deposito": "",
+        "saque": "1711",
+        "total": 5676,
+        "depositoRetirado": 7387,
+        "lucro": 372
+      },
+      {
+        "id": 12,
+        "banca": 5676,
+        "casa1": "4278",
+        "casa2": "1958",
+        "deposito": "",
+        "saque": "394",
+        "total": 6236,
+        "depositoRetirado": 6630,
+        "lucro": 954
+      },
+      {
+        "id": 13,
+        "banca": 6236,
+        "casa1": "5259",
+        "casa2": "2738",
+        "deposito": "1196",
+        "saque": "",
+        "total": 7997,
+        "depositoRetirado": 6801,
+        "lucro": 565
+      },
+      {
+        "id": 14,
+        "banca": 7997,
+        "casa1": "7572",
+        "casa2": "1095",
+        "deposito": "",
+        "saque": "",
+        "total": 8667,
+        "depositoRetirado": 8667,
+        "lucro": 670
+      },
+      {
+        "id": 15,
+        "banca": 8667,
+        "casa1": "7797",
+        "casa2": "1831",
+        "deposito": "",
+        "saque": "170",
+        "total": 9628,
+        "depositoRetirado": 9798,
+        "lucro": 1131
+      },
+      {
+        "id": 16,
+        "banca": 9628,
+        "casa1": "3308",
+        "casa2": "5262",
+        "deposito": "",
+        "saque": "1950",
+        "total": 8570,
+        "depositoRetirado": 10520,
+        "lucro": 892
+      },
+      {
+        "id": 17,
+        "banca": 8570,
+        "casa1": "5329",
+        "casa2": "5057",
+        "deposito": "648",
+        "saque": "",
+        "total": 10386,
+        "depositoRetirado": 9738,
+        "lucro": 1168
+      },
+      {
+        "id": 18,
+        "banca": 10386,
+        "casa1": "7399",
+        "casa2": "3275",
+        "deposito": "",
+        "saque": "388",
+        "total": 10674,
+        "depositoRetirado": 11062,
+        "lucro": 676
+      },
+      {
+        "id": 19,
+        "banca": 10674,
+        "casa1": "7221",
+        "casa2": "5089",
+        "deposito": "561",
+        "saque": "",
+        "total": 12310,
+        "depositoRetirado": 11749,
+        "lucro": 1075
+      },
+      {
+        "id": 20,
+        "banca": 12310,
+        "casa1": "8841",
+        "casa2": "3853",
+        "deposito": "",
+        "saque": "",
+        "total": 12694,
+        "depositoRetirado": 12694,
+        "lucro": 384
+      },
+      {
+        "id": 21,
+        "banca": 12694,
+        "casa1": "9604",
+        "casa2": "3339",
+        "deposito": "100",
+        "saque": "",
+        "total": 12943,
+        "depositoRetirado": 12843,
+        "lucro": 149
+      },
+      {
+        "id": 22,
+        "banca": 12943,
+        "casa1": "0",
+        "casa2": "3826",
+        "deposito": "",
+        "saque": "9736",
+        "total": 3826,
+        "depositoRetirado": 13562,
+        "lucro": 619
+      },
+      {
+        "id": 23,
+        "banca": 3826,
+        "casa1": "1672",
+        "casa2": "4253",
+        "deposito": "2000",
+        "saque": "",
+        "total": 5925,
+        "depositoRetirado": 3925,
+        "lucro": 99
+      }
+    ],
+    "lucroTotal": 12464,
+    "totalDias": 23,
+    "archivedAt": "2026-01-27T19:50:08.301Z"
+  }
+]

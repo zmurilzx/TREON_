@@ -1,0 +1,387 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0e1a;
+  --foreground: #ffffff;
+  --sidebar-width: 240px;
+  --header-height: 64px;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-chrome {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-chrome-400 via-chrome-300 to-chrome-500 animate-pulse-slow;
+    text-shadow: 0 0 20px rgba(41, 205, 127, 0.3);
+  }
+
+  .bg-chrome-gradient {
+    @apply bg-gradient-to-r from-chrome-600 via-chrome-500 to-chrome-400 bg-[length:200%_auto] hover:bg-right transition-all duration-700 ease-in-out;
+  }
+
+  .border-chrome {
+    @apply border-chrome-500/50 shadow-chrome-sm;
+  }
+
+  /* Sidebar utilities */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300 cursor-pointer;
+  }
+
+  .sidebar-item-active {
+    @apply sidebar-item bg-chrome-500/10 text-chrome-400 border-l-4 border-chrome-500;
+  }
+
+  /* Gamification utilities */
+  .stat-positive {
+    @apply text-chrome-400;
+  }
+
+  .stat-negative {
+    @apply text-red-400;
+  }
+
+  .progress-bar {
+    @apply h-2 rounded-full bg-white/10 overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-chrome-600 to-chrome-400 transition-all duration-1000 ease-out;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #29CD7F;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Card styles */
+.card {
+  @apply bg-[#0f1419] rounded-2xl p-6 border border-white/5 hover:border-chrome-500/30 hover:shadow-chrome-md transition-all duration-700;
+}
+
+.card-hover {
+  @apply card hover:-translate-y-1;
+}
+
+.card-gamified {
+  @apply card relative overflow-hidden;
+}
+
+.card-gamified::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(41, 205, 127, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.card-gamified:hover::before {
+  left: 100%;
+}
+
+/* Button styles */
+.btn {
+  @apply px-6 py-3 rounded-xl font-bold uppercase tracking-wider transition-all duration-700 disabled:opacity-50 disabled:cursor-not-allowed select-none;
+}
+
+.btn-primary {
+  @apply btn bg-gradient-to-r from-chrome-600 via-chrome-500 to-chrome-400 text-[#0a0e1a] hover:shadow-chrome-lg hover:scale-[1.02] border border-chrome-400/20 active:scale-[0.98];
+  background-size: 200% auto;
+}
+
+.btn-primary:hover {
+  background-position: right center;
+}
+
+.btn-secondary {
+  @apply btn bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white border border-white/10 hover:border-white/20;
+}
+
+.btn-success {
+  @apply btn-primary;
+}
+
+.btn-danger {
+  @apply btn bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/20 hover:shadow-danger-glow;
+}
+
+.btn-icon {
+  @apply p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-chrome-500/50 transition-all duration-300;
+}
+
+/* Input styles */
+.input {
+  @apply w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none focus:border-chrome-500/50 focus:shadow-chrome-input transition-all duration-500 placeholder-gray-600;
+}
+
+/* Badge styles */
+.badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide;
+}
+
+.badge-success {
+  @apply badge bg-chrome-500/10 text-chrome-400 border border-chrome-500/20;
+}
+
+.badge-danger {
+  @apply badge bg-red-500/10 text-red-400 border border-red-500/20;
+}
+
+.badge-warning {
+  @apply badge bg-yellow-500/10 text-yellow-400 border border-yellow-500/20;
+}
+
+.badge-info {
+  @apply badge bg-blue-500/10 text-blue-400 border border-blue-500/20;
+}
+
+.badge-premium {
+  @apply badge bg-gradient-to-r from-yellow-500/20 to-orange-500/20 text-yellow-400 border border-yellow-500/30;
+}
+
+.badge-new {
+  @apply badge bg-purple-500/10 text-purple-400 border border-purple-500/20 animate-pulse;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  @apply inline-block w-5 h-5 border-2 border-chrome-500 border-t-transparent rounded-full animate-spin;
+}
+
+/* Gradient backgrounds */
+.gradient-primary {
+  @apply bg-gradient-to-r from-chrome-600 via-chrome-500 to-chrome-400;
+}
+
+.gradient-success {
+  @apply bg-gradient-to-r from-chrome-600 to-chrome-400;
+}
+
+.gradient-danger {
+  @apply bg-gradient-to-r from-red-600 to-red-400;
+}
+
+.gradient-warning {
+  @apply bg-gradient-to-r from-yellow-600 to-yellow-400;
+}
+
+.gradient-premium {
+  @apply bg-gradient-to-r from-yellow-600 via-orange-500 to-yellow-400;
+}
+
+/* Glass morphism effect */
+.glass {
+  @apply bg-[#0f1419]/80 backdrop-blur-xl border border-white/10;
+}
+
+/* Sidebar styles */
+.sidebar {
+  @apply fixed left-0 top-0 h-full bg-[#0a0e1a] border-r border-white/10 z-40;
+  width: var(--sidebar-width);
+}
+
+.sidebar-header {
+  @apply flex items-center gap-3 px-6 py-5 border-b border-white/10;
+}
+
+.sidebar-section {
+  @apply px-4 py-6 space-y-1;
+}
+
+.sidebar-section-title {
+  @apply text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-4;
+}
+
+/* Dashboard layout */
+.dashboard-layout {
+  @apply min-h-screen bg-[#0a0e1a];
+  padding-left: var(--sidebar-width);
+}
+
+.dashboard-content {
+  @apply p-8;
+  padding-top: calc(var(--header-height) + 2rem);
+}
+
+/* Stats card */
+.stats-card {
+  @apply card-gamified flex flex-col gap-2;
+}
+
+.stats-value {
+  @apply text-3xl font-bold;
+}
+
+.stats-label {
+  @apply text-sm text-gray-400;
+}
+
+.stats-trend {
+  @apply flex items-center gap-1 text-xs font-semibold;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, transparent 0%, rgba(41, 205, 127, 0.1) 50%, transparent 100%);
+  background-size: 1000px 100%;
+}
+
+/* Tooltip */
+.tooltip {
+  @apply absolute z-50 px-3 py-2 text-xs font-medium text-white bg-gray-900 rounded-lg shadow-lg opacity-0 invisible transition-all duration-200;
+}
+
+.tooltip-visible {
+  @apply opacity-100 visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
+  }
+
+  .dashboard-layout {
+    padding-left: 0;
+  }
+
+  .dashboard-content {
+    @apply p-4;
+    padding-top: calc(var(--header-height) + 1rem);
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
+    width: 280px;
+    max-width: 85vw;
+  }
+
+  .sidebar-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .card-gamified {
+    @apply p-4;
+  }
+
+  .btn-icon {
+    @apply min-w-[44px] min-h-[44px];
+  }
+}

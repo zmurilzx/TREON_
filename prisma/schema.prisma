@@ -1,0 +1,362 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  birthDate     DateTime
+  photoUrl      String?
+  isVerified    Boolean   @default(false)
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  sessions      Session[]
+  subscriptions Subscription[]
+  transactions  Transaction[]
+  accesses      UserAccess[]
+  verificationTokens VerificationToken[]
+  surebets      Surebet[]
+  bankroll      Bankroll?
+
+  @@index([email])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  type       TokenType
+  expires    DateTime
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([identifier, token])
+  @@index([userId])
+}
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+// ============================================
+// SUBSCRIPTION & PAYMENT
+// ============================================
+
+model Subscription {
+  id                String             @id @default(cuid())
+  userId            String
+  planType          PlanType
+  status            SubscriptionStatus @default(ACTIVE)
+  startDate         DateTime           @default(now())
+  endDate           DateTime
+  abacatePaySubId   String?            @unique
+  autoRenew         Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  // Relations
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions      Transaction[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([endDate])
+}
+
+enum PlanType {
+  MONTHLY_METHOD
+  CALCULATOR_ACCESS
+  VIP_TIER_1
+  VIP_TIER_2
+  VIP_TIER_3
+  DELAY_ESPORTIVO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  GRACE_PERIOD
+  DUNNING
+}
+
+model Transaction {
+  id                String            @id @default(cuid())
+  userId            String
+  subscriptionId    String?
+  amount            Decimal           @db.Decimal(10, 2)
+  type              TransactionType
+  status            TransactionStatus @default(PENDING)
+  abacatePayTxId    String?           @unique
+  idempotencyKey    String            @unique
+  metadata          Json?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  // Relations
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription      Subscription?     @relation(fields: [subscriptionId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([abacatePayTxId])
+  @@index([idempotencyKey])
+}
+
+enum TransactionType {
+  PURCHASE
+  SUBSCRIPTION
+  REFUND
+  CHARGEBACK
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model PaymentEvent {
+  id            String   @id @default(cuid())
+  eventType     String
+  signature     String
+  payload       Json
+  processed     Boolean  @default(false)
+  retryCount    Int      @default(0)
+  error         String?
+  createdAt     DateTime @default(now())
+  processedAt   DateTime?
+
+  @@index([eventType])
+  @@index([processed])
+  @@index([createdAt])
+}
+
+// ============================================
+// CONTENT MANAGEMENT
+// ============================================
+
+model Method {
+  id            String       @id @default(cuid())
+  title         String
+  description   String       @db.Text
+  content       String       @db.Text
+  price         Decimal      @db.Decimal(10, 2)
+  isPublished   Boolean      @default(false)
+  category      String
+  accessLevel   AccessLevel  @default(PAID)
+  fileUrl       String?      // PDF or video URL
+  thumbnailUrl  String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Relations
+  accesses      UserAccess[]
+
+  @@index([isPublished])
+  @@index([category])
+  @@index([accessLevel])
+}
+
+model Spreadsheet {
+  id            String       @id @default(cuid())
+  title         String
+  description   String       @db.Text
+  fileUrl       String
+  templateType  String
+  category      String
+  accessLevel   AccessLevel  @default(PAID)
+  downloadCount Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Relations
+  accesses      UserAccess[]
+
+  @@index([category])
+  @@index([accessLevel])
+}
+
+model Calculator {
+  id            String   @id @default(cuid())
+  name          String
+  type          String   @unique
+  config        Json     // Stores calculator-specific configuration
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([type])
+  @@index([isActive])
+}
+
+enum AccessLevel {
+  FREE
+  PAID
+  VIP
+}
+
+// ============================================
+// ACCESS CONTROL
+// ============================================
+
+model UserAccess {
+  id            String       @id @default(cuid())
+  userId        String
+  contentType   ContentType
+  contentId     String
+  methodId      String?
+  spreadsheetId String?
+  grantedAt     DateTime     @default(now())
+  expiresAt     DateTime?
+  source        AccessSource
+
+  // Relations
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  method        Method?      @relation(fields: [methodId], references: [id], onDelete: Cascade)
+  spreadsheet   Spreadsheet? @relation(fields: [spreadsheetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentType, contentId])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+enum ContentType {
+  METHOD
+  SPREADSHEET
+  VIDEO
+}
+
+enum AccessSource {
+  PURCHASE
+  SUBSCRIPTION
+  ADMIN_GRANT
+  PROMOTION
+}
+
+// ============================================
+// BET MANAGEMENT
+// ============================================
+
+model Surebet {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Informações básicas
+  event       String   // Nome do evento (ex: "Flamengo vs Palmeiras")
+  sport       String   // Esporte (ex: "Futebol", "Basquete")
+  betDate     DateTime // Data da aposta
+  
+  // Casa 1 (obrigatória)
+  house1      String   // Nome da casa (ex: "Bet365")
+  odd1        Float    // Odd da casa 1
+  stake1      Float    // Stake da casa 1
+  market1     String   // Mercado (ex: "Over 2.5", "Casa")
+  
+  // Casa 2 (obrigatória para surebet)
+  house2      String   // Nome da casa 2
+  odd2        Float    // Odd da casa 2
+  stake2      Float    // Stake da casa 2
+  market2     String   // Mercado da casa 2
+  
+  // Cálculos automáticos
+  totalStake      Float    // Stake total (stake1 + stake2)
+  potentialProfit Float    // Lucro potencial
+  
+  // Resultado (após aposta finalizar)
+  status          BetStatus @default(PENDING) // PENDING, SETTLED
+  winningHouse    Int?      // 1 ou 2 (qual casa ganhou)
+  actualProfit    Float?    // Lucro real após resultado
+  roi             Float?    // ROI em porcentagem
+  resultDate      DateTime? // Data do resultado
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([betDate])
+}
+
+enum BetStatus {
+  PENDING   // Aguardando resultado
+  SETTLED   // Finalizada (com resultado)
+}
+
+// ============================================
+// SPREADSHEETS
+// ============================================
+
+model Bankroll {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Configurações
+  bancaInicial Float
+  metaMensal   Float
+  
+  // Dados das linhas (JSON array)
+  rows        Json
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@unique([userId]) // Cada usuário tem apenas uma planilha de bankroll
+}
+
+// ============================================
+// AUDIT & LOGGING
+// ============================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
