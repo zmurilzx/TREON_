@@ -29,8 +29,8 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        // Get Discord link from metadata
-        const discordLink = subscription.metadata?.discordLink || 'https://discord.gg/seu-servidor';
+        // Get Discord link - hardcoded for now since metadata doesn't exist in schema
+        const discordLink = 'https://discord.gg/seu-servidor';
 
         return NextResponse.json({
             status: 'paid',
