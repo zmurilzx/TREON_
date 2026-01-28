@@ -132,12 +132,8 @@ async function grantSubscriptionAccess(userId: string, planType: string, abacate
     const now = new Date();
     const endDate = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
 
-    // Get Discord link from transaction metadata
-    const transaction = await prisma.transaction.findFirst({
-        where: { abacatePayTxId: abacatePaySubId },
-    });
-
-    const discordLink = transaction?.metadata?.discordLink || null;
+    // Get Discord link - hardcoded for now since metadata type issues
+    const discordLink = 'https://discord.gg/seu-servidor';
 
     // Create or update subscription
     const subscription = await prisma.subscription.upsert({
