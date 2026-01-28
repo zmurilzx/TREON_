@@ -15,9 +15,9 @@ async function main() {
         create: {
             email: 'admin@treon.com',
             name: 'Admin TREON',
-            password: hashedPassword,
+            passwordHash: hashedPassword,
             birthDate: new Date('1990-01-01'),
-            emailVerified: new Date(), // Auto-verificado
+            isVerified: true, // Auto-verificado
             role: 'ADMIN',
         },
     });
