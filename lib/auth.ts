@@ -1,4 +1,20 @@
 import bcrypt from 'bcryptjs';
+import { NextAuthOptions } from 'next-auth';
+
+/**
+ * NextAuth configuration
+ */
+export const authOptions: NextAuthOptions = {
+    // Add your NextAuth configuration here
+    // This is a placeholder - you'll need to configure based on your auth setup
+    providers: [
+        // Add your providers here
+    ],
+    session: {
+        strategy: 'jwt',
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+};
 
 /**
  * Hash a password using bcrypt
