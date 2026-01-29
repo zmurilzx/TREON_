@@ -210,9 +210,9 @@ export default function ProceduresPage() {
     
     const novoROI = entry.totalInvestido > 0 ? (novoLucro / entry.totalInvestido) * 100 : 0;
     
-    const updatedEntry = {
+    const updatedEntry: Entry = {
       ...entry,
-      defesa: defesaData,
+      defesa: defesaData as Defesa,
       lucro: novoLucro,
       retornoTotal: novoRetorno,
       roi: novoROI
