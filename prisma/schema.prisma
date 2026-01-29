@@ -344,6 +344,24 @@ model Bankroll {
   @@unique([userId]) // Cada usuário tem apenas uma planilha de bankroll
 }
 
+model BankrollArchive {
+  id              String   @id @default(cuid())
+  userId          String
+  
+  // Dados do mês arquivado
+  mesAno          String   // Ex: "Janeiro 2026"
+  bancaInicial    Float
+  metaMensal      Float
+  lucroTotal      Float
+  roiMensal       Float
+  rows            Json     // Array de linhas do mês
+  
+  archivedAt      DateTime @default(now())
+  
+  @@index([userId])
+  @@index([mesAno])
+}
+
 model ProcedureEntry {
   id              String   @id @default(cuid())
   userId          String
