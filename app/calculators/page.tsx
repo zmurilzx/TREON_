@@ -32,27 +32,11 @@ export default function CalculatorsPage() {
                         badge="Grátis"
                     />
                     <CalculatorCard
-                        icon={<Target className="w-8 h-8" />}
-                        title="Dutching"
-                        description="Distribua stakes em múltiplas seleções para lucro igual"
-                        href="/calculators/dutching"
-                        gradient="from-blue-500 to-purple-500"
-                        badge="Grátis"
-                    />
-                    <CalculatorCard
                         icon={<DollarSign className="w-8 h-8" />}
                         title="Cashback"
                         description="Calcule o valor real do cashback considerando rollover"
                         href="/calculators/cashback"
                         gradient="from-green-500 to-emerald-500"
-                        badge="Grátis"
-                    />
-                    <CalculatorCard
-                        icon={<TrendingUp className="w-8 h-8" />}
-                        title="ROI Estimator"
-                        description="Analise seu retorno sobre investimento e performance"
-                        href="/calculators/roi-estimator"
-                        gradient="from-blue-500 to-purple-500"
                         badge="Grátis"
                     />
                     <CalculatorCard

@@ -33,6 +33,9 @@ model User {
   verificationTokens VerificationToken[]
   surebets      Surebet[]
   bankroll      Bankroll?
+  procedureEntries ProcedureEntry[]
+  earnings      Earning[]
+  accounts      Account[]
 
   @@index([email])
 }
@@ -339,6 +342,84 @@ model Bankroll {
 
   @@index([userId])
   @@unique([userId]) // Cada usuário tem apenas uma planilha de bankroll
+}
+
+model ProcedureEntry {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Dados da entrada
+  data            String   // Data da entrada (formato: YYYY-MM-DD)
+  dataCompleta    String   // Data completa com hora
+  tipo            String   // AUMENTADA 25%, DUPLO GREEN, etc
+  evento          String   // Nome do evento
+  casas           Json     // Array de casas (nome, valor, odd, etc)
+  totalInvestido  Float
+  retornoTotal    Float
+  lucro           Float
+  roi             Float
+  defesa          Json?    // Dados da defesa (opcional)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([data])
+  @@index([tipo])
+}
+
+model Earning {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Dados da operação
+  data            String   // Data (formato: YYYY-MM-DD)
+  hora            String   // Hora (formato: HH:MM)
+  jogo            String   // Nome do jogo/evento
+  tipo            String   // DG, Delay, TIP, OUTRO
+  stake           Float    // Valor apostado
+  odd             Float    // Odd da aposta
+  casa            String   // Casa de apostas
+  resultado       String   // green, red, pending
+  lucroLiquido    Float    // Lucro líquido
+  lucroParceria   Float    // Lucro da parceria
+  parceria        String?  // Nome da parceria (opcional)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([data])
+  @@index([tipo])
+  @@index([resultado])
+}
+
+model Account {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Dados da conta
+  parceiro        String   // Nome do parceiro
+  telefone        String   // Telefone do parceiro
+  casa            String   // Casa de apostas
+  metodo          String   // Método (Delay, DG, etc)
+  status          String   // Ativa, Boa, Limitada, Ruim, Banida
+  tipo            String   // Compra, Aluguel, % Lucro
+  percentual      Float?   // Percentual (opcional)
+  lucroLiquido    Float    // Lucro líquido
+  repasse         Float    // Valor do repasse
+  repassePago     Boolean  // Se o repasse foi pago
+  roi             Float    // ROI
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([tipo])
 }
 
 // ============================================

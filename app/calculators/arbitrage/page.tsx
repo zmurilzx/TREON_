@@ -325,46 +325,47 @@ export default function SurebetCalculatorPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#1a1d29] text-white">
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
             <button
                 onClick={() => router.back()}
-                className="fixed top-3 left-3 z-50 p-2 bg-[#1E2433]/80 border border-gray-700/50 rounded-lg text-gray-400 hover:text-[#00FFA3] transition-all"
+                className="fixed top-3 left-3 z-50 p-2 bg-gray-800/90 border border-gray-600 rounded-lg text-gray-300 hover:text-[#00FFA3] hover:bg-gray-700 transition-all shadow-lg"
             >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
             </button>
 
-            <main className="container mx-auto px-6 py-8 max-w-4xl">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-display font-bold mb-2 uppercase tracking-tight">Surebet Calculator</h1>
+            <main className="container mx-auto px-3 sm:px-6 py-4 sm:py-8 max-w-4xl">
+                <div className="mb-4 sm:mb-8 pt-8 sm:pt-0">
+                    <h1 className="text-2xl sm:text-4xl font-display font-bold mb-1 sm:mb-2 uppercase tracking-tight text-white drop-shadow-lg">Surebet Calculator</h1>
+                    <p className="text-gray-300 text-xs sm:text-sm">Calcule apostas de arbitragem e garanta lucro</p>
                 </div>
 
                 {/* ROI Header Card */}
-                <div className={`mb-6 rounded-2xl border-2 p-6 transition-all ${calculationResult?.isSurebet ? 'bg-gradient-to-r from-dg-green/20 to-emerald-500/20 border-dg-green shadow-lg shadow-dg-green/30' : 'bg-[#252b3b] border-gray-600'}`}>
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                            <div className="text-sm text-gray-300 mb-1 uppercase tracking-wider">ROI</div>
-                            <div className={`text-5xl font-black transition-all ${calculationResult?.roi > 0 ? 'text-dg-green drop-shadow-[0_0_10px_rgba(0,255,163,0.5)]' : 'text-gray-400'}`}>
+                <div className={`mb-3 sm:mb-6 rounded-xl sm:rounded-2xl border-2 p-3 sm:p-6 transition-all ${calculationResult?.isSurebet ? 'bg-gradient-to-r from-emerald-500/30 to-green-500/30 border-emerald-400 shadow-2xl shadow-emerald-500/40' : 'bg-gray-800/80 border-gray-600 shadow-xl'}`}>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                        <div className="w-full sm:w-auto">
+                            <div className="text-xs sm:text-sm text-gray-200 mb-1 uppercase tracking-wider font-semibold">ROI</div>
+                            <div className={`text-3xl sm:text-5xl font-black transition-all ${calculationResult?.roi > 0 ? 'text-emerald-400 drop-shadow-[0_0_15px_rgba(16,185,129,0.8)]' : 'text-gray-300'}`}>
                                 {calculationResult ? `${calculationResult.roi > 0 ? '+' : ''}${calculationResult.roi.toFixed(2)}%` : '+0.00%'}
                             </div>
                         </div>
-                        <div className="text-right">
-                            <div className="mb-2">
-                                <span className="text-xs text-gray-300 uppercase tracking-wider">Investido: </span>
-                                <span className="text-lg font-bold">R$ {calculationResult?.totalInvested.toFixed(2) || '0.00'}</span>
+                        <div className="w-full sm:w-auto text-left sm:text-right">
+                            <div className="mb-1 sm:mb-2">
+                                <span className="text-[10px] sm:text-xs text-gray-200 uppercase tracking-wider font-semibold">Investido: </span>
+                                <span className="text-sm sm:text-lg font-bold text-white">R$ {calculationResult?.totalInvested.toFixed(2) || '0.00'}</span>
                             </div>
                             <div>
-                                <span className="text-xs text-gray-300 uppercase tracking-wider">Retorno: </span>
-                                <span className={`text-lg font-bold transition-all ${calculationResult?.roi > 0 ? 'text-dg-green drop-shadow-[0_0_8px_rgba(0,255,163,0.4)]' : 'text-white'}`}>
+                                <span className="text-[10px] sm:text-xs text-gray-200 uppercase tracking-wider font-semibold">Retorno: </span>
+                                <span className={`text-sm sm:text-lg font-bold transition-all ${calculationResult?.roi > 0 ? 'text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.6)]' : 'text-white'}`}>
                                     R$ {calculationResult ? (calculationResult.totalInvested + calculationResult.totalProfit).toFixed(2) : '0.00'}
                                 </span>
                             </div>
                         </div>
                         {calculationResult?.isSurebet && (
-                            <div>
-                                <div className="px-4 py-2 bg-dg-green text-black rounded-full font-bold text-sm flex items-center gap-2 uppercase tracking-wide">
-                                    <span className="w-2 h-2 bg-black rounded-full animate-pulse"></span>
+                            <div className="w-full sm:w-auto">
+                                <div className="px-3 sm:px-5 py-1.5 sm:py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-full font-bold text-xs sm:text-sm flex items-center justify-center gap-2 uppercase tracking-wide shadow-lg shadow-emerald-500/50">
+                                    <span className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></span>
                                     Lucro Garantido
                                 </div>
                             </div>
@@ -373,26 +374,26 @@ export default function SurebetCalculatorPage() {
                 </div>
 
                 {/* Total Capital */}
-                <div className={`mb-6 rounded-2xl border-2 p-5 transition-all ${fixedAnchor.type === 'total' ? 'border-dg-green bg-[#252b3b]' : 'bg-[#252b3b] border-gray-600'}`}>
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
+                <div className={`mb-3 sm:mb-6 rounded-xl sm:rounded-2xl border-2 p-3 sm:p-5 transition-all shadow-xl ${fixedAnchor.type === 'total' ? 'border-emerald-400 bg-gray-800/80 shadow-emerald-500/30' : 'bg-gray-800/80 border-gray-600'}`}>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                             <div
                                 onClick={() => setFixedAnchor(fixedAnchor.type === 'total' ? { type: 'none' } : { type: 'total' })}
-                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all ${fixedAnchor.type === 'total' ? 'border-dg-green bg-dg-green/20' : 'border-gray-600 hover:border-gray-500'}`}
+                                className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all ${fixedAnchor.type === 'total' ? 'border-emerald-400 bg-emerald-500/30 shadow-lg shadow-emerald-500/50' : 'border-gray-500 hover:border-gray-400'}`}
                             >
-                                {fixedAnchor.type === 'total' && <div className="w-2.5 h-2.5 bg-dg-green rounded-full"></div>}
+                                {fixedAnchor.type === 'total' && <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-400 rounded-full"></div>}
                             </div>
-                            <h3 className="text-lg font-bold uppercase tracking-wide">Total Capital</h3>
+                            <h3 className="text-base sm:text-lg font-bold uppercase tracking-wide text-white">Total Capital</h3>
                         </div>
                         {calculationResult?.isSurebet && (
-                            <div className="flex items-center gap-2 px-3 py-1 bg-dg-green/20 border border-dg-green rounded-lg">
-                                <span className="w-2 h-2 bg-dg-green rounded-full animate-pulse"></span>
-                                <span className="text-xs font-bold text-dg-green uppercase">Surebet</span>
+                            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-emerald-500/30 border border-emerald-400 rounded-lg shadow-lg shadow-emerald-500/30">
+                                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                <span className="text-[10px] sm:text-xs font-bold text-emerald-400 uppercase">Surebet</span>
                             </div>
                         )}
                     </div>
                     <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg font-bold">R$</span>
+                        <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-300 text-base sm:text-lg font-bold">R$</span>
                         <input
                             type="number"
                             value={totalInvestment}
@@ -402,29 +403,29 @@ export default function SurebetCalculatorPage() {
                                     setFixedAnchor({ type: 'total' });
                                 }
                             }}
-                            className="w-full bg-[#1a1d29] border-2 border-gray-600 rounded-xl pl-14 pr-4 py-4 text-3xl font-black text-white focus:outline-none focus:border-dg-green transition-all"
+                            className="w-full bg-gray-900 border-2 border-gray-600 rounded-lg sm:rounded-xl pl-11 sm:pl-14 pr-3 sm:pr-4 py-3 sm:py-4 text-2xl sm:text-3xl font-black text-white focus:outline-none focus:border-emerald-400 focus:shadow-lg focus:shadow-emerald-500/30 transition-all"
                             placeholder="0,00"
                         />
                     </div>
                 </div>
 
                 {/* Bet Cards */}
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 sm:space-y-4 mb-3 sm:mb-6">
                     {bets.map((bet, index) => {
                         const resIndex = calculationResult?.validBetIds.indexOf(bet.id);
                         const profit = resIndex !== -1 && calculationResult ? calculationResult.profits[resIndex] : 0;
                         
                         return (
-                            <div key={bet.id} className={`rounded-xl border-2 p-3 transition-all ${fixedAnchor.type === 'bet' && fixedAnchor.id === bet.id ? 'border-dg-green bg-[#252b3b]' : 'bg-[#252b3b] border-gray-600'}`}>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center">
-                                            <span className="text-xs font-bold text-gray-300">{index + 1}</span>
+                            <div key={bet.id} className={`rounded-lg sm:rounded-xl border-2 p-3 sm:p-4 transition-all shadow-lg ${fixedAnchor.type === 'bet' && fixedAnchor.id === bet.id ? 'border-emerald-400 bg-gray-800/80 shadow-emerald-500/30' : 'bg-gray-800/80 border-gray-600'}`}>
+                                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                                    <div className="flex items-center gap-1.5 sm:gap-2">
+                                        <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
+                                            <span className="text-[10px] sm:text-xs font-bold text-white">{index + 1}</span>
                                         </div>
-                                        <span className="text-sm font-bold text-gray-400 uppercase tracking-wide">Casa {index + 1}</span>
+                                        <span className="text-xs sm:text-sm font-bold text-white uppercase tracking-wide">Casa {index + 1}</span>
                                     </div>
                                     {bets.length > 2 && (
-                                        <button onClick={() => removeBet(bet.id)} className="text-gray-600 hover:text-red-500 p-1">
+                                        <button onClick={() => removeBet(bet.id)} className="text-gray-400 hover:text-red-400 hover:bg-red-500/20 p-1.5 rounded-lg transition-all">
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                             </svg>
@@ -432,52 +433,52 @@ export default function SurebetCalculatorPage() {
                                     )}
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3 mb-3">
+                                <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-2 sm:mb-3">
                                     <div>
-                                        <label className="block text-xs uppercase text-gray-500 mb-1 font-bold tracking-wider">ODD</label>
+                                        <label className="block text-[10px] sm:text-xs uppercase text-gray-200 mb-1 sm:mb-1.5 font-bold tracking-wider">ODD</label>
                                         <input
                                             type="number"
                                             step="0.01"
                                             value={bet.odd}
                                             onChange={(e) => updateBet(bet.id, 'odd', e.target.value)}
-                                            className="w-full bg-[#1a1d29] border-2 border-gray-600 rounded-lg px-3 py-2 text-lg font-bold text-white focus:outline-none focus:border-dg-green transition-all"
+                                            className="w-full bg-gray-900 border-2 border-gray-600 rounded-lg px-2 sm:px-3 py-2 sm:py-2.5 text-base sm:text-lg font-bold text-white focus:outline-none focus:border-blue-400 focus:shadow-lg focus:shadow-blue-500/30 transition-all"
                                             placeholder="0,00"
                                         />
                                     </div>
                                     <div>
-                                        <div className="flex justify-between mb-2">
-                                            <label className="block text-xs uppercase text-gray-500 font-bold tracking-wider">STAKE</label>
-                                            <div className="flex items-center gap-3">
-                                                <label className="flex items-center gap-1 cursor-pointer group" title="Distribuir Lucro">
-                                                    <span className="text-[10px] font-bold text-gray-500 group-hover:text-blue-400">D</span>
-                                                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${bet.distribute ? 'bg-blue-500 border-blue-500' : 'border-gray-600'}`}>
+                                        <div className="flex justify-between mb-1 sm:mb-1.5">
+                                            <label className="block text-[10px] sm:text-xs uppercase text-gray-200 font-bold tracking-wider">STAKE</label>
+                                            <div className="flex items-center gap-1.5 sm:gap-3">
+                                                <label className="flex items-center gap-0.5 sm:gap-1 cursor-pointer group" title="Distribuir Lucro">
+                                                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-300 group-hover:text-blue-400">D</span>
+                                                    <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded border-2 flex items-center justify-center transition-all ${bet.distribute ? 'bg-blue-500 border-blue-500 shadow-lg shadow-blue-500/50' : 'border-gray-500'}`}>
                                                         {bet.distribute && <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                                                     </div>
                                                     <input type="checkbox" checked={bet.distribute} onChange={(e) => updateBet(bet.id, 'distribute', e.target.checked)} className="hidden" />
                                                 </label>
-                                                <label className="flex items-center gap-1 cursor-pointer group" title="Fixar Stake">
-                                                    <span className="text-[10px] font-bold text-gray-500 group-hover:text-dg-green">C</span>
-                                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${fixedAnchor.type === 'bet' && fixedAnchor.id === bet.id ? 'border-dg-green bg-dg-green/20' : 'border-gray-600'}`}>
-                                                        {fixedAnchor.type === 'bet' && fixedAnchor.id === bet.id && <div className="w-2 h-2 bg-dg-green rounded-full"></div>}
+                                                <label className="flex items-center gap-0.5 sm:gap-1 cursor-pointer group" title="Fixar Stake">
+                                                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-300 group-hover:text-emerald-400">C</span>
+                                                    <div className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 flex items-center justify-center transition-all ${fixedAnchor.type === 'bet' && fixedAnchor.id === bet.id ? 'border-emerald-400 bg-emerald-500/30 shadow-lg shadow-emerald-500/50' : 'border-gray-500'}`}>
+                                                        {fixedAnchor.type === 'bet' && fixedAnchor.id === bet.id && <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>}
                                                     </div>
                                                     <input type="checkbox" checked={fixedAnchor.type === 'bet' && fixedAnchor.id === bet.id} onChange={(e) => setFixedAnchor(e.target.checked ? { type: 'bet', id: bet.id } : { type: 'none' })} className="hidden" />
                                                 </label>
                                             </div>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-1.5 sm:gap-2">
                                             <div className="relative flex-1">
-                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">R$</span>
+                                                <span className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm sm:text-base font-bold">R$</span>
                                                 <input
                                                     type="number"
                                                     step="0.01"
                                                     value={bet.stake}
                                                     onChange={(e) => handleStakeChange(bet.id, e.target.value)}
-                                                    className="w-full bg-[#1a1d29] border-2 border-gray-600 rounded-lg pl-10 pr-3 py-2 text-lg font-bold text-white focus:outline-none focus:border-dg-green transition-all"
+                                                    className="w-full bg-gray-900 border-2 border-gray-600 rounded-lg pl-8 sm:pl-10 pr-2 sm:pr-3 py-2 sm:py-2.5 text-base sm:text-lg font-bold text-white focus:outline-none focus:border-emerald-400 focus:shadow-lg focus:shadow-emerald-500/30 transition-all"
                                                     placeholder="0,00"
                                                 />
                                             </div>
-                                            <button onClick={() => copyStake(bet.stake)} className="px-2 bg-[#1a1d29] border-2 border-gray-600 hover:border-dg-green rounded-lg transition-all">
-                                                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <button onClick={() => copyStake(bet.stake)} className="px-2 sm:px-2.5 bg-gray-900 border-2 border-gray-600 hover:border-emerald-400 hover:bg-emerald-500/20 rounded-lg transition-all">
+                                                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                                 </svg>
                                             </button>
@@ -487,9 +488,9 @@ export default function SurebetCalculatorPage() {
 
                                 {/* Profit Display */}
                                 {calculationResult && resIndex !== -1 && (
-                                    <div className={`rounded-lg p-3 border-2 transition-all ${profit > 0 ? 'bg-dg-green/20 border-dg-green shadow-lg shadow-dg-green/20' : 'bg-[#1a1d29] border-gray-600'}`}>
+                                    <div className={`rounded-lg p-2 sm:p-3 border-2 transition-all ${profit > 0 ? 'bg-emerald-500/30 border-emerald-400 shadow-lg shadow-emerald-500/40' : 'bg-gray-900 border-gray-600'}`}>
                                         <div className="flex items-center justify-center">
-                                            <span className={`text-xl font-black transition-all ${profit > 0 ? 'text-dg-green drop-shadow-[0_0_8px_rgba(0,255,163,0.5)]' : 'text-gray-500'}`}>
+                                            <span className={`text-lg sm:text-xl font-black transition-all ${profit > 0 ? 'text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]' : 'text-gray-400'}`}>
                                                 {profit > 0 ? '+' : ''}R$ {Math.abs(profit).toFixed(2)}
                                             </span>
                                         </div>
@@ -497,39 +498,39 @@ export default function SurebetCalculatorPage() {
                                 )}
 
                                 {/* Options */}
-                                <div className="flex flex-wrap gap-2 mt-3">
-                                    <label className="flex items-center gap-2 cursor-pointer group">
-                                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${bet.commission ? 'bg-dg-green border-dg-green' : 'border-gray-600'}`}>
-                                            {bet.commission && <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                                <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2 sm:mt-3">
+                                    <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group">
+                                        <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded border-2 flex items-center justify-center transition-all ${bet.commission ? 'bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-500/50' : 'border-gray-500'}`}>
+                                            {bet.commission && <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                                         </div>
                                         <input type="checkbox" checked={bet.commission} onChange={(e) => updateBet(bet.id, 'commission', e.target.checked)} className="hidden" />
-                                        <span className="text-sm text-gray-400 group-hover:text-white transition-colors">Comissão</span>
+                                        <span className="text-xs sm:text-sm text-gray-200 group-hover:text-white transition-colors">Comissão</span>
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer group">
-                                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${bet.freebet ? 'bg-blue-500 border-blue-500' : 'border-gray-600'}`}>
-                                            {bet.freebet && <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                                    <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group">
+                                        <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded border-2 flex items-center justify-center transition-all ${bet.freebet ? 'bg-blue-500 border-blue-500 shadow-lg shadow-blue-500/50' : 'border-gray-500'}`}>
+                                            {bet.freebet && <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                                         </div>
                                         <input type="checkbox" checked={bet.freebet} onChange={(e) => updateBet(bet.id, 'freebet', e.target.checked)} className="hidden" />
-                                        <span className="text-sm text-gray-400 group-hover:text-white transition-colors">FreeBet</span>
+                                        <span className="text-xs sm:text-sm text-gray-200 group-hover:text-white transition-colors">FreeBet</span>
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer group">
-                                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${bet.oddBoost ? 'bg-yellow-500 border-yellow-500' : 'border-gray-600'}`}>
-                                            {bet.oddBoost && <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                                    <label className="flex items-center gap-1.5 sm:gap-2 cursor-pointer group">
+                                        <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded border-2 flex items-center justify-center transition-all ${bet.oddBoost ? 'bg-yellow-500 border-yellow-500 shadow-lg shadow-yellow-500/50' : 'border-gray-500'}`}>
+                                            {bet.oddBoost && <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
                                         </div>
                                         <input type="checkbox" checked={bet.oddBoost} onChange={(e) => updateBet(bet.id, 'oddBoost', e.target.checked)} className="hidden" />
-                                        <span className="text-sm text-gray-400 group-hover:text-white transition-colors">Aumento de ODD</span>
+                                        <span className="text-xs sm:text-sm text-gray-200 group-hover:text-white transition-colors">Aumento</span>
                                     </label>
                                 </div>
 
                                 {bet.commission && (
                                     <div className="mt-2">
-                                        <label className="block text-xs text-gray-400 mb-1 uppercase font-bold">Comissão (%)</label>
+                                        <label className="block text-[10px] sm:text-xs text-gray-200 mb-1 sm:mb-1.5 uppercase font-bold">Comissão (%)</label>
                                         <input
                                             type="number"
                                             step="0.1"
                                             value={bet.commissionPercent}
                                             onChange={(e) => updateBet(bet.id, 'commissionPercent', e.target.value)}
-                                            className="w-full bg-[#1a1d29] border-2 border-gray-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-dg-green"
+                                            className="w-full bg-gray-900 border-2 border-gray-600 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-sm text-white focus:outline-none focus:border-emerald-400 focus:shadow-lg focus:shadow-emerald-500/30"
                                             placeholder="0,0"
                                         />
                                     </div>
@@ -537,13 +538,13 @@ export default function SurebetCalculatorPage() {
 
                                 {bet.oddBoost && (
                                     <div className="mt-2">
-                                        <label className="block text-xs text-gray-400 mb-1 uppercase font-bold">Aumento de ODD (%)</label>
+                                        <label className="block text-[10px] sm:text-xs text-gray-200 mb-1 sm:mb-1.5 uppercase font-bold">Aumento de ODD (%)</label>
                                         <input
                                             type="number"
                                             step="0.1"
                                             value={bet.oddBoostPercent}
                                             onChange={(e) => updateBet(bet.id, 'oddBoostPercent', e.target.value)}
-                                            className="w-full bg-[#1a1d29] border-2 border-gray-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-500"
+                                            className="w-full bg-gray-900 border-2 border-gray-600 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-sm text-white focus:outline-none focus:border-yellow-400 focus:shadow-lg focus:shadow-yellow-500/30"
                                             placeholder="25"
                                         />
                                     </div>
@@ -554,40 +555,41 @@ export default function SurebetCalculatorPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-4">
-                    <button onClick={addBet} className="flex-1 py-4 border-2 border-dashed border-gray-600 rounded-2xl text-gray-300 hover:border-dg-green hover:text-dg-green hover:bg-dg-green/10 transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wide">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                    <button onClick={addBet} className="flex-1 py-3 sm:py-4 border-2 border-dashed border-gray-500 rounded-xl sm:rounded-2xl text-gray-200 hover:border-emerald-400 hover:text-emerald-400 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wide text-xs sm:text-sm">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                         </svg>
-                        Adicionar Casa
+                        <span className="hidden sm:inline">Adicionar Casa</span>
+                        <span className="sm:hidden">Adicionar</span>
                     </button>
-                    <button onClick={swapOdds} className="px-6 py-4 bg-transparent border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-500/20 hover:text-blue-400 hover:border-blue-500 transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wide">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onClick={swapOdds} className="flex-1 sm:flex-none px-4 sm:px-6 py-3 sm:py-4 bg-transparent border-2 border-gray-600 rounded-xl sm:rounded-2xl text-gray-200 hover:bg-blue-500/20 hover:text-blue-400 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wide text-xs sm:text-sm">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                         </svg>
-                        Inverter
+                        <span>Inverter</span>
                     </button>
-                    <button onClick={clearAll} className="px-6 py-4 bg-transparent border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-red-500/20 hover:text-red-500 hover:border-red-500 transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wide">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onClick={clearAll} className="flex-1 sm:flex-none px-4 sm:px-6 py-3 sm:py-4 bg-transparent border-2 border-gray-600 rounded-xl sm:rounded-2xl text-gray-200 hover:bg-red-500/20 hover:text-red-400 hover:border-red-400 hover:shadow-lg hover:shadow-red-500/30 transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wide text-xs sm:text-sm">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                        Limpar
+                        <span>Limpar</span>
                     </button>
                 </div>
             </main>
 
             {/* Copy Toast Notification */}
             {showCopyToast && (
-                <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
-                    <div className="bg-dg-green text-black px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 border-2 border-dg-green">
-                        <div className="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">
+                    <div className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl shadow-2xl flex items-center gap-2 sm:gap-3 border-2 border-emerald-400">
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                         <div>
-                            <div className="font-bold text-sm">Copiado!</div>
-                            <div className="text-xs opacity-80">R$ {copiedValue}</div>
+                            <div className="font-bold text-xs sm:text-sm">Copiado!</div>
+                            <div className="text-[10px] sm:text-xs opacity-80">R$ {copiedValue}</div>
                         </div>
                     </div>
                 </div>

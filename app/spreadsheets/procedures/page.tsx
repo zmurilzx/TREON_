@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Plus, X, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -48,25 +48,29 @@ export default function ProceduresPage() {
   const [showDefesa, setShowDefesa] = useState<string | null>(null);
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [loading, setLoading] = useState(true);
   
-  const [entries, setEntries] = useState<Entry[]>([
-    {
-      id: '1',
-      data: '2025-12-14',
-      dataCompleta: '14/12/2025, 21:39:32',
-      tipo: 'DUPLO GREEN',
-      evento: 'FLAMENGO X SANTOS',
-      casas: [
-        { id: '1', nome: 'Bet365 +25%', valor: 4000, oddOriginal: 4.00, aumentoOdd: 25, ganhou: false },
-        { id: '2', nome: 'Bet365 +25%', valor: 4000, oddOriginal: 4.00, aumentoOdd: 25, ganhou: true },
-        { id: '3', nome: 'SuperBet', valor: 5000, oddOriginal: 3.20, aumentoOdd: 0, ganhou: true }
-      ],
-      totalInvestido: 13000,
-      retornoTotal: 32000,
-      lucro: 19000,
-      roi: 146.15
+  const [entries, setEntries] = useState<Entry[]>([]);
+
+  // Carregar entradas do banco de dados
+  useEffect(() => {
+    loadEntries();
+  }, []);
+
+  const loadEntries = async () => {
+    try {
+      const response = await fetch('/api/procedures');
+      if (response.ok) {
+        const data = await response.json();
+        setEntries(data.entries || []);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar entradas:', error);
+      toast.error('Erro ao carregar entradas');
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   // Dados da entrada atual
   const [data, setData] = useState('');
@@ -115,7 +119,7 @@ export default function ProceduresPage() {
     setCasas(casas.map(c => c.id === id ? { ...c, ganhou: !c.ganhou } : c));
   };
 
-  const jogarParaPlanilha = () => {
+  const jogarParaPlanilha = async () => {
     if (!data) {
       toast.error('Selecione uma data!');
       return;
@@ -134,8 +138,7 @@ export default function ProceduresPage() {
     const lucro = retornoTotal - total;
     const roi = (lucro / total) * 100;
 
-    const novaEntry: Entry = {
-      id: Date.now().toString(),
+    const novaEntry = {
       data,
       dataCompleta: new Date().toLocaleString('pt-BR'),
       tipo,
@@ -147,14 +150,30 @@ export default function ProceduresPage() {
       roi
     };
 
-    setEntries([novaEntry, ...entries]);
-    toast.success('Entrada registrada na planilha!');
-    
-    setEvento('');
-    setCasas(casas.map(c => ({ ...c, valor: 0, oddOriginal: 0, ganhou: false })));
+    try {
+      const response = await fetch('/api/procedures', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(novaEntry)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setEntries([data.entry, ...entries]);
+        toast.success('Entrada registrada na planilha!');
+        
+        setEvento('');
+        setCasas(casas.map(c => ({ ...c, valor: 0, oddOriginal: 0, ganhou: false })));
+      } else {
+        toast.error('Erro ao salvar entrada');
+      }
+    } catch (error) {
+      console.error('Erro ao salvar entrada:', error);
+      toast.error('Erro ao salvar entrada');
+    }
   };
 
-  const salvarDefesa = (entryId: string) => {
+  const salvarDefesa = async (entryId: string) => {
     if (!defesaData.tipo) {
       toast.error('Selecione o tipo de defesa!');
       return;
@@ -171,63 +190,88 @@ export default function ProceduresPage() {
       }
     }
     
-    // Recalcular lucro e ROI considerando a defesa
-    setEntries(entries.map(e => {
-      if (e.id === entryId) {
-        let novoLucro = e.lucro;
-        let novoRetorno = e.retornoTotal;
-        
-        // Para cashout, somar o valor ao lucro total
-        if (defesaData.tipo === 'cashout' && defesaData.valorProtecao) {
-          novoLucro = e.lucro + defesaData.valorProtecao;
-          novoRetorno = e.retornoTotal + defesaData.valorProtecao;
-        }
-        // Para proteção, calcular retorno da proteção
-        else if (defesaData.oddProtecao && defesaData.valorProtecao) {
-          const retornoProtecao = defesaData.valorProtecao * defesaData.oddProtecao;
-          novoRetorno = e.retornoTotal + retornoProtecao - defesaData.valorProtecao;
-          novoLucro = novoRetorno - e.totalInvestido;
-        }
-        
-        const novoROI = e.totalInvestido > 0 ? (novoLucro / e.totalInvestido) * 100 : 0;
-        
-        return {
-          ...e,
-          defesa: defesaData as Defesa,
-          lucro: novoLucro,
-          retornoTotal: novoRetorno,
-          roi: novoROI
-        };
-      }
-      return e;
-    }));
+    const entry = entries.find(e => e.id === entryId);
+    if (!entry) return;
+
+    let novoLucro = entry.lucro;
+    let novoRetorno = entry.retornoTotal;
     
-    setShowDefesa(null);
-    setDefesaData({});
-    toast.success('Defesa registrada!');
+    // Para cashout, somar o valor ao lucro total
+    if (defesaData.tipo === 'cashout' && defesaData.valorProtecao) {
+      novoLucro = entry.lucro + defesaData.valorProtecao;
+      novoRetorno = entry.retornoTotal + defesaData.valorProtecao;
+    }
+    // Para proteção, calcular retorno da proteção
+    else if (defesaData.oddProtecao && defesaData.valorProtecao) {
+      const retornoProtecao = defesaData.valorProtecao * defesaData.oddProtecao;
+      novoRetorno = entry.retornoTotal + retornoProtecao - defesaData.valorProtecao;
+      novoLucro = novoRetorno - entry.totalInvestido;
+    }
+    
+    const novoROI = entry.totalInvestido > 0 ? (novoLucro / entry.totalInvestido) * 100 : 0;
+    
+    const updatedEntry = {
+      ...entry,
+      defesa: defesaData,
+      lucro: novoLucro,
+      retornoTotal: novoRetorno,
+      roi: novoROI
+    };
+
+    try {
+      const response = await fetch('/api/procedures', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedEntry)
+      });
+
+      if (response.ok) {
+        setEntries(entries.map(e => e.id === entryId ? updatedEntry : e));
+        setShowDefesa(null);
+        setDefesaData({});
+        toast.success('Defesa registrada!');
+      } else {
+        toast.error('Erro ao salvar defesa');
+      }
+    } catch (error) {
+      console.error('Erro ao salvar defesa:', error);
+      toast.error('Erro ao salvar defesa');
+    }
   };
 
-  const toggleCasaGanhadora = (entryId: string, casaId: string) => {
-    setEntries(entries.map(entry => {
-      if (entry.id === entryId) {
-        const casasAtualizadas = entry.casas.map(casa => 
-          casa.id === casaId ? { ...casa, ganhou: !casa.ganhou } : casa
-        );
-        const casasGanhadoras = casasAtualizadas.filter(c => c.ganhou);
-        const retornoTotal = casasGanhadoras.reduce((sum, c) => sum + calcularRetorno(c), 0);
-        const lucro = retornoTotal - entry.totalInvestido;
-        const roi = entry.totalInvestido > 0 ? (lucro / entry.totalInvestido) * 100 : 0;
-        
-        return {
-          ...entry,
-          casas: casasAtualizadas,
-          retornoTotal,
-          lucro,
-          roi
-        };
+  const toggleCasaGanhadora = async (entryId: string, casaId: string) => {
+    const entry = entries.find(e => e.id === entryId);
+    if (!entry) return;
+
+    const casasAtualizadas = entry.casas.map(casa => 
+      casa.id === casaId ? { ...casa, ganhou: !casa.ganhou } : casa
+    );
+    const casasGanhadoras = casasAtualizadas.filter(c => c.ganhou);
+    const retornoTotal = casasGanhadoras.reduce((sum, c) => sum + calcularRetorno(c), 0);
+    const lucro = retornoTotal - entry.totalInvestido;
+    const roi = entry.totalInvestido > 0 ? (lucro / entry.totalInvestido) * 100 : 0;
+    
+    const updatedEntry = {
+      ...entry,
+      casas: casasAtualizadas,
+      retornoTotal,
+      lucro,
+      roi
+    };
+
+    try {
+      const response = await fetch('/api/procedures', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedEntry)
+      });
+
+      if (response.ok) {
+        setEntries(entries.map(e => e.id === entryId ? updatedEntry : e));
       }
-      return entry;
-    }));
+    } catch (error) {
+      console.error('Erro ao atualizar entrada:', error);
+    }
   };
 
   const abrirModalEdicao = (entry: Entry) => {
@@ -235,20 +279,33 @@ export default function ProceduresPage() {
     setShowEditModal(true);
   };
 
-  const salvarEdicao = (entryEditada: Entry) => {
+  const salvarEdicao = async (entryEditada: Entry) => {
     const casasGanhadoras = entryEditada.casas.filter(c => c.ganhou);
     const retornoTotal = casasGanhadoras.reduce((sum, c) => sum + calcularRetorno(c), 0);
     const lucro = retornoTotal - entryEditada.totalInvestido;
     const roi = entryEditada.totalInvestido > 0 ? (lucro / entryEditada.totalInvestido) * 100 : 0;
 
-    setEntries(entries.map(e => 
-      e.id === entryEditada.id 
-        ? { ...entryEditada, retornoTotal, lucro, roi }
-        : e
-    ));
-    setShowEditModal(false);
-    setEditingEntry(null);
-    toast.success('Entrada atualizada!');
+    const updatedEntry = { ...entryEditada, retornoTotal, lucro, roi };
+
+    try {
+      const response = await fetch('/api/procedures', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedEntry)
+      });
+
+      if (response.ok) {
+        setEntries(entries.map(e => e.id === entryEditada.id ? updatedEntry : e));
+        setShowEditModal(false);
+        setEditingEntry(null);
+        toast.success('Entrada atualizada!');
+      } else {
+        toast.error('Erro ao atualizar entrada');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar entrada:', error);
+      toast.error('Erro ao atualizar entrada');
+    }
   };
 
   const abrirDefesa = (entryId: string) => {
@@ -256,9 +313,22 @@ export default function ProceduresPage() {
     setShowDefesa(entryId);
   };
 
-  const removerEntry = (id: string) => {
-    setEntries(entries.filter(e => e.id !== id));
-    toast.success('Entrada removida!');
+  const removerEntry = async (id: string) => {
+    try {
+      const response = await fetch(`/api/procedures?id=${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setEntries(entries.filter(e => e.id !== id));
+        toast.success('Entrada removida!');
+      } else {
+        toast.error('Erro ao remover entrada');
+      }
+    } catch (error) {
+      console.error('Erro ao remover entrada:', error);
+      toast.error('Erro ao remover entrada');
+    }
   };
 
   // Filtrar entries

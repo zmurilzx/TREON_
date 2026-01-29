@@ -30,6 +30,13 @@ interface DashboardStats {
     xpToNextLevel: number;
     totalBets: number;
     winningBets: number;
+    spreadsheets?: {
+        bankroll: number;
+        procedures: number;
+        earnings: number;
+        accounts: number;
+        total: number;
+    };
 }
 
 interface RecentBet {
@@ -149,6 +156,54 @@ export default function DashboardPage() {
                     trend={stats.totalBets > 0 ? { value: `${stats.totalBets} apostas`, positive: true } : undefined}
                 />
             </div>
+
+            {/* Lucro Total das Planilhas */}
+            {stats.spreadsheets && (
+                <div className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-emerald-600/20 via-emerald-500/10 to-emerald-400/20 border border-emerald-500/30 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+                    <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 className="text-lg font-semibold text-gray-300 mb-1">💰 Lucro Total das Planilhas</h3>
+                                <p className="text-sm text-gray-400">Soma de todas as suas operações</p>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-4xl font-bold text-emerald-400">
+                                    R$ {stats.spreadsheets.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Breakdown por planilha */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-emerald-500/20">
+                            <div className="text-center">
+                                <div className="text-xs text-gray-400 mb-1">Gestão de Banca</div>
+                                <div className="text-lg font-bold text-white">
+                                    R$ {stats.spreadsheets.bankroll.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-xs text-gray-400 mb-1">Aumentada 25%</div>
+                                <div className="text-lg font-bold text-white">
+                                    R$ {stats.spreadsheets.procedures.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-xs text-gray-400 mb-1">Planilha de Ganhos</div>
+                                <div className="text-lg font-bold text-white">
+                                    R$ {stats.spreadsheets.earnings.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-xs text-gray-400 mb-1">Gestão de Contas</div>
+                                <div className="text-lg font-bold text-white">
+                                    R$ {stats.spreadsheets.accounts.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Earnings by Period */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

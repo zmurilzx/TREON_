@@ -114,11 +114,11 @@ export default function CasasPage() {
         { name: "BETFUSION", url: "https://www.betfusion.bet.br", hasPA: true, color: "from-purple-600 to-purple-800" },
         { name: "NOSSABET", url: "https://www.nossabet.bet.br", hasPA: true, color: "from-blue-600 to-blue-800" },
         { name: "PAGOL", url: "https://www.pagol.bet.br", hasPA: true, color: "from-green-600 to-green-800" },
-        { name: "VUPI BET", url: "https://www.vupibet.bet.br", hasPA: false, color: "from-red-600 to-red-800" },
+        { name: "VUPI BET", url: "https://www.vupi.bet.br/aposta-esportiva", hasPA: true, color: "from-red-600 to-red-800" },
         { name: "ESTRELA BET", url: "https://www.estrelabet.bet.br", hasPA: true, color: "from-yellow-600 to-yellow-800" },
         { name: "CASSINO", url: "https://www.cassino.bet.br", hasPA: true, color: "from-orange-600 to-orange-800" },
         { name: "BATEUBET", url: "https://www.bateubet.bet.br", hasPA: true, color: "from-indigo-600 to-indigo-800" },
-        { name: "ESPORTIVABET", url: "https://www.esportivabet.bet.br", hasPA: true, color: "from-pink-600 to-pink-800" },
+        { name: "ESPORTIVABET", url: "https://esportiva.bet.br/", hasPA: true, color: "from-pink-600 to-pink-800" },
         { name: "GOL DE BET", url: "https://www.goldebet.bet.br", hasPA: false, color: "from-cyan-600 to-cyan-800" },
         { name: "LOTOGREEN", url: "https://www.lotogreen.bet.br", hasPA: true, color: "from-teal-600 to-teal-800" },
         { name: "BR4BET", url: "https://www.br4bet.bet.br", hasPA: true, color: "from-lime-600 to-lime-800" },
@@ -277,18 +277,22 @@ export default function CasasPage() {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1600px] mx-auto">
                 {group.houses.map((house, houseIndex) => (
-                  <a
+                  <div
                     key={houseIndex}
-                    href={house.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group block"
+                    className="group"
                   >
                     <div className="bg-gradient-to-br from-[#1A1A1A] to-[#111] border border-gray-800/50 rounded-2xl p-6 hover:border-emerald-500/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-emerald-500/20 h-full flex flex-col">
-                      <div className={`bg-gradient-to-r ${house.color} rounded-xl p-4 mb-4 relative overflow-hidden`}>
-                        <div className="absolute inset-0 bg-black/20"></div>
-                        <h3 className="text-xl font-black text-white relative z-10 text-center">{house.name}</h3>
-                      </div>
+                      <a
+                        href={house.name === "VUPI BET" ? "https://www.vupi.bet.br/" : house.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        <div className={`bg-gradient-to-r ${house.color} rounded-xl p-4 mb-4 relative overflow-hidden hover:opacity-90 transition-opacity cursor-pointer`}>
+                          <div className="absolute inset-0 bg-black/20"></div>
+                          <h3 className="text-xl font-black text-white relative z-10 text-center">{house.name}</h3>
+                        </div>
+                      </a>
 
                       <div className="flex-1 flex flex-col items-center justify-center">
                         <div className="mb-2">
@@ -304,15 +308,20 @@ export default function CasasPage() {
                       </div>
 
                       <div className="mt-6">
-                        <div className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-black font-bold text-center py-3 rounded-xl transition-all duration-300 group-hover:shadow-lg group-hover:shadow-emerald-500/50">
+                        <a
+                          href={house.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block bg-gradient-to-r from-emerald-500 to-cyan-500 text-black font-bold text-center py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/50"
+                        >
                           Acessar Casa
                           <svg className="w-5 h-5 inline-block ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                           </svg>
-                        </div>
+                        </a>
                       </div>
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
             </div>

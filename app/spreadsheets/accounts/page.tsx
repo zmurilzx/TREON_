@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Plus, Trash2, Edit, Search, Upload, Download, Users, DollarSign, TrendingUp, Clock, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import React from 'react';
 
 type StatusConta = 'Ativa' | 'Boa' | 'Limitada' | 'Ruim' | 'Banida';
 type TipoConta = 'Compra' | 'Aluguel' | '% Lucro';
@@ -24,25 +25,30 @@ interface Conta {
 }
 
 export default function AccountsPage() {
-  const [contas, setContas] = useState<Conta[]>([
-    {
-      id: '1',
-      parceiro: 'Cristiano Londrina',
-      telefone: '43999211532',
-      casa: 'Superbet',
-      metodo: 'Delay',
-      status: 'Limitada',
-      tipo: '% Lucro',
-      percentual: 50,
-      lucroLiquido: 1928.50,
-      repasse: 1928.50,
-      repassePago: true,
-      roi: 192.9
-    }
-  ]);
-
+  const [contas, setContas] = useState<Conta[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Carregar contas do banco de dados
+  useEffect(() => {
+    loadContas();
+  }, []);
+
+  const loadContas = async () => {
+    try {
+      const response = await fetch('/api/accounts');
+      if (response.ok) {
+        const data = await response.json();
+        setContas(data.contas || []);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar contas:', error);
+      toast.error('Erro ao carregar contas');
+    } finally {
+      setLoading(false);
+    }
+  };
   
   // Filtros
   const [busca, setBusca] = useState('');
@@ -64,22 +70,70 @@ export default function AccountsPage() {
     return true;
   });
 
-  const adicionarConta = (conta: Omit<Conta, 'id'>) => {
-    if (editingId) {
-      setContas(contas.map(c => c.id === editingId ? { ...conta, id: editingId } : c));
-      toast.success('Conta atualizada!');
-      setEditingId(null);
-    } else {
-      const novaConta = { ...conta, id: Date.now().toString() };
-      setContas([novaConta, ...contas]);
-      toast.success('Conta adicionada!');
+  const adicionarConta = async (conta: Omit<Conta, 'id'>) => {
+    try {
+      if (editingId) {
+        // Atualizar conta existente
+        const response = await fetch('/api/accounts', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...conta, id: editingId })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setContas(contas.map(c => c.id === editingId ? data.conta : c));
+          toast.success('Conta atualizada!');
+          setEditingId(null);
+        } else {
+          toast.error('Erro ao atualizar conta');
+        }
+      } else {
+        // Criar nova conta
+        const response = await fetch('/api/accounts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(conta)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setContas([data.conta, ...contas]);
+          toast.success('Conta adicionada!');
+        } else {
+          toast.error('Erro ao adicionar conta');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao salvar conta:', error);
+      toast.error('Erro ao salvar conta');
     }
   };
 
-  const removerConta = (id: string) => {
+  const removerConta = async (id: string) => {
     if (confirm('Tem certeza que deseja excluir esta conta?')) {
-      setContas(contas.filter(c => c.id !== id));
-      toast.success('Conta removida!');
+      console.log('Deletando conta com ID:', id);
+      try {
+        const response = await fetch(`/api/accounts?id=${id}`, {
+          method: 'DELETE'
+        });
+
+        console.log('Resposta da API:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Conta deletada com sucesso:', data);
+          setContas(contas.filter(c => c.id !== id));
+          toast.success('Conta removida permanentemente!');
+        } else {
+          const errorData = await response.json();
+          console.error('Erro ao deletar:', errorData);
+          toast.error(`Erro: ${errorData.error || 'Erro ao remover conta'}`);
+        }
+      } catch (error) {
+        console.error('Erro ao remover conta:', error);
+        toast.error('Erro ao remover conta');
+      }
     }
   };
 
@@ -423,6 +477,32 @@ function ModalConta({
     roi: conta?.roi || 0
   });
 
+  // Cálculo automático baseado no tipo de parceria
+  useEffect(() => {
+    let novoRepasse = 0;
+    let novoROI = 0;
+
+    if (formData.tipo === 'Compra') {
+      // Compra: sem repasse, todo lucro é seu
+      novoRepasse = 0;
+      novoROI = formData.lucroLiquido > 0 ? formData.lucroLiquido : 0;
+    } else if (formData.tipo === 'Aluguel') {
+      // Aluguel: repasse = lucro líquido (você paga tudo ao dono)
+      novoRepasse = formData.lucroLiquido;
+      novoROI = 0; // Sem ROI pois você não fica com nada
+    } else if (formData.tipo === '% Lucro') {
+      // % Lucro: repasse = percentual do lucro
+      novoRepasse = (formData.lucroLiquido * formData.percentual) / 100;
+      novoROI = formData.lucroLiquido - novoRepasse;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      repasse: Number(novoRepasse.toFixed(2)),
+      roi: Number(novoROI.toFixed(2))
+    }));
+  }, [formData.tipo, formData.lucroLiquido, formData.percentual]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
@@ -514,15 +594,31 @@ function ModalConta({
             </div>
           </div>
 
+          {/* Explicação do tipo de parceria */}
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+            <p className="text-xs text-blue-200">
+              {formData.tipo === 'Compra' && (
+                <><strong>💰 Compra:</strong> Você comprou a conta. Todo o lucro é seu, sem repasse ao parceiro.</>
+              )}
+              {formData.tipo === 'Aluguel' && (
+                <><strong>🏠 Aluguel:</strong> Você aluga a conta. Todo o lucro vai para o dono (repasse = lucro total).</>
+              )}
+              {formData.tipo === '% Lucro' && (
+                <><strong>📊 % Lucro:</strong> Você divide o lucro com o parceiro. Defina o percentual que vai para ele.</>
+              )}
+            </p>
+          </div>
+
           {formData.tipo === '% Lucro' && (
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Percentual (%)</label>
+              <label className="block text-sm text-gray-400 mb-2">Percentual do Parceiro (%)</label>
               <input
                 type="number"
                 step="0.1"
                 value={formData.percentual}
                 onChange={(e) => setFormData({ ...formData, percentual: Number(e.target.value) })}
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                placeholder="Ex: 50 (para 50%)"
               />
             </div>
           )}
@@ -539,26 +635,26 @@ function ModalConta({
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Repasse (R$)</label>
+              <label className="block text-sm text-gray-400 mb-2">Repasse (R$) <span className="text-[10px] text-emerald-400">• Automático</span></label>
               <input
                 type="number"
                 step="0.01"
                 value={formData.repasse}
-                onChange={(e) => setFormData({ ...formData, repasse: Number(e.target.value) })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                readOnly
+                className="w-full bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-2 text-emerald-400 font-bold cursor-not-allowed"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">ROI (%)</label>
+              <label className="block text-sm text-gray-400 mb-2">ROI (R$) <span className="text-[10px] text-purple-400">• Automático</span></label>
               <input
                 type="number"
-                step="0.1"
+                step="0.01"
                 value={formData.roi}
-                onChange={(e) => setFormData({ ...formData, roi: Number(e.target.value) })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white"
+                readOnly
+                className="w-full bg-purple-500/10 border border-purple-500/30 rounded-lg px-4 py-2 text-purple-400 font-bold cursor-not-allowed"
               />
             </div>
             <div className="flex items-end">

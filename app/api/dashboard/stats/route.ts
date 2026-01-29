@@ -28,6 +28,39 @@ export async function GET() {
     
     // Lucro líquido (apenas apostas finalizadas)
     const netProfit = settledBets.reduce((sum, bet) => sum + (bet.actualProfit || 0), 0)
+
+    // ===== LUCROS DAS PLANILHAS =====
+    
+    // 1. Gestão de Banca - Lucro total
+    const bankroll = await prisma.bankroll.findUnique({
+      where: { userId }
+    })
+    const bankrollProfit = bankroll?.rows ? 
+      (bankroll.rows as any[]).reduce((sum, row) => sum + (row.lucro || 0), 0) : 0
+
+    // 2. Procedimentos (Aumentada 25%) - Lucro total
+    const procedures = await prisma.procedureEntry.findMany({
+      where: { userId }
+    })
+    const proceduresProfit = procedures.reduce((sum: number, entry: any) => sum + (entry.lucro || 0), 0)
+
+    // 3. Planilha de Ganhos (Earnings) - Lucro líquido total
+    const earnings = await prisma.earning.findMany({
+      where: { 
+        userId,
+        resultado: 'green' // Apenas operações green
+      }
+    })
+    const earningsProfit = earnings.reduce((sum: number, op: any) => sum + (op.lucroLiquido || 0), 0)
+
+    // 4. Gestão de Contas - ROI total (seu lucro)
+    const accounts = await prisma.account.findMany({
+      where: { userId }
+    })
+    const accountsProfit = accounts.reduce((sum: number, acc: any) => sum + (acc.roi || 0), 0)
+
+    // LUCRO TOTAL DE TODAS AS PLANILHAS
+    const totalSpreadsheetProfit = bankrollProfit + proceduresProfit + earningsProfit + accountsProfit
     
     // ROI médio
     const roi = totalStaked > 0 ? (netProfit / totalStaked) * 100 : 0
@@ -71,7 +104,15 @@ export async function GET() {
       xp: Number(xp.toFixed(2)),
       xpToNextLevel,
       totalBets,
-      winningBets
+      winningBets,
+      // Lucros das planilhas
+      spreadsheets: {
+        bankroll: Number(bankrollProfit.toFixed(2)),
+        procedures: Number(proceduresProfit.toFixed(2)),
+        earnings: Number(earningsProfit.toFixed(2)),
+        accounts: Number(accountsProfit.toFixed(2)),
+        total: Number(totalSpreadsheetProfit.toFixed(2))
+      }
     })
 
   } catch (error: any) {

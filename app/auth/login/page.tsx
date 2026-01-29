@@ -241,15 +241,6 @@ export default function LoginPage() {
                         <span>Dados Criptografados</span>
                     </div>
                 </div>
-
-                {/* Demo Credentials */}
-                <div className="mt-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-center">
-                    <p className="text-xs text-blue-400 font-semibold mb-2">🎮 Credenciais de Teste</p>
-                    <div className="text-xs text-gray-300 space-y-1">
-                        <p><strong>Email:</strong> admin@treon.com</p>
-                        <p><strong>Senha:</strong> Senha123</p>
-                    </div>
-                </div>
             </div>
         </div>
     );

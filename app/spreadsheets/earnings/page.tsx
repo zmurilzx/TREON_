@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Plus, Trash2, Edit, Search, Calendar, Tag, Users, Upload, Download, TrendingUp, DollarSign, Target, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -24,27 +24,32 @@ interface Operacao {
 }
 
 export default function EarningsPage() {
-  const [operacoes, setOperacoes] = useState<Operacao[]>([
-    {
-      id: '1',
-      data: '2025-12-01',
-      hora: '16:00',
-      jogo: 'Inglaterra F x gana F',
-      tipo: 'Delay',
-      stake: 499,
-      odd: 3.85,
-      casa: 'Superbet',
-      resultado: 'green',
-      lucroLiquido: 1422.15,
-      lucroParceria: 0,
-      parceria: 'João Primo'
-    }
-  ]);
-
+  const [operacoes, setOperacoes] = useState<Operacao[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [metaMensal, setMetaMensal] = useState(50000);
   const [showEditMeta, setShowEditMeta] = useState(false);
+
+  // Carregar operações do banco de dados
+  useEffect(() => {
+    loadOperacoes();
+  }, []);
+
+  const loadOperacoes = async () => {
+    try {
+      const response = await fetch('/api/earnings');
+      if (response.ok) {
+        const data = await response.json();
+        setOperacoes(data.operacoes || []);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar operações:', error);
+      toast.error('Erro ao carregar operações');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filtros
   const [busca, setBusca] = useState('');
@@ -80,22 +85,70 @@ export default function EarningsPage() {
     return true;
   });
 
-  const adicionarOperacao = (op: Omit<Operacao, 'id'>) => {
-    if (editingId) {
-      setOperacoes(operacoes.map(o => o.id === editingId ? { ...op, id: editingId } : o));
-      toast.success('Operação atualizada!');
-      setEditingId(null);
-    } else {
-      const novaOp = { ...op, id: Date.now().toString() };
-      setOperacoes([novaOp, ...operacoes]);
-      toast.success('Operação adicionada!');
+  const adicionarOperacao = async (op: Omit<Operacao, 'id'>) => {
+    try {
+      if (editingId) {
+        // Atualizar operação existente
+        const response = await fetch('/api/earnings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...op, id: editingId })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setOperacoes(operacoes.map(o => o.id === editingId ? data.operacao : o));
+          toast.success('Operação atualizada!');
+          setEditingId(null);
+        } else {
+          toast.error('Erro ao atualizar operação');
+        }
+      } else {
+        // Criar nova operação
+        const response = await fetch('/api/earnings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(op)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setOperacoes([data.operacao, ...operacoes]);
+          toast.success('Operação adicionada!');
+        } else {
+          toast.error('Erro ao adicionar operação');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao salvar operação:', error);
+      toast.error('Erro ao salvar operação');
     }
   };
 
-  const removerOperacao = (id: string) => {
+  const removerOperacao = async (id: string) => {
     if (confirm('Tem certeza que deseja excluir esta operação?')) {
-      setOperacoes(operacoes.filter(op => op.id !== id));
-      toast.success('Operação removida!');
+      console.log('Deletando operação com ID:', id);
+      try {
+        const response = await fetch(`/api/earnings?id=${id}`, {
+          method: 'DELETE'
+        });
+
+        console.log('Resposta da API:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Operação deletada com sucesso:', data);
+          setOperacoes(operacoes.filter(op => op.id !== id));
+          toast.success('Operação removida permanentemente!');
+        } else {
+          const errorData = await response.json();
+          console.error('Erro ao deletar:', errorData);
+          toast.error(`Erro: ${errorData.error || 'Erro ao remover operação'}`);
+        }
+      } catch (error) {
+        console.error('Erro ao remover operação:', error);
+        toast.error('Erro ao remover operação');
+      }
     }
   };
 

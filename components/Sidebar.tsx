@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import {
     TrendingUp,
     Calculator,
-    BarChart3,
-    Target,
     Crown,
     Users,
     Download,
@@ -67,10 +65,8 @@ export default function Sidebar({ className = "" }: SidebarProps) {
             items: [
                 { icon: TrendingUp, label: "Surebet", href: "/calculators/arbitrage", badge: null },
                 { icon: Percent, label: "Cashback", href: "/calculators/cashback", badge: null },
-                { icon: Target, label: "Dutching", href: "/calculators/dutching", badge: null },
                 { icon: Gift, label: "Freebet", href: "/calculators/freebet", badge: null },
                 { icon: Crosshair, label: "Gols HA", href: "/calculators/gols-ha", badge: null },
-                { icon: BarChart3, label: "ROI Estimator", href: "/calculators/roi-estimator", badge: null },
                 { icon: FileSpreadsheet, label: "Gerenciamento", href: "/dashboard/transactions", badge: null },
                 { icon: Sparkles, label: "Tips do Dia", href: "/tips", badge: "Novo" },
             ]
